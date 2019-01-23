@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Binary System Calculator</title>
+    </head>
+    <body>
+		<form oninput="calc(aInput, aUnit, m1Input, m1Unit, m2Input, m2Unit, r1, r2, p);">
+			<script>
+				function calc(aInput, aUnit, m1Input, m1Unit, m2Input, m2Unit, r1, r2, p) {
+					let a = parseFloat(aInput.value);
+					let m1 = parseFloat(m1Input.value);
+					let m2 = parseFloat(m2Input.value);
+					let m2C = m2;
+					
+					if (m2Unit.value !== m1Unit.value) {
+						if (m2Unit.value === "e") {
+							switch (m1Unit.value) {
+								case "j":
+									m2C /= 317.82838;
+								case "s":
+									m2C /= 332946;
+							}
+						} else if (m2Unit.value === "j") {
+							switch (m1Unit.value) {
+								case "e":
+									m2C *= 317.82838;
+								case "s":
+									m2C /= 1047;
+							}
+						} else if (m2Unit.value === "s") {
+							switch (m1Unit.value) {
+								case "e":
+									m2C *= 332946;
+								case "j":
+									m2C *= 1047;
+							}
+						}
+					}
+					
+					r1.value = a * m2C / (m1 + m2C);
+					r2.value = a - r1.value;
+					let R = a;
+					
+					if (aUnit.value === "m") {
+						R /= 1000;
+						R *= 0.000000006684587;
+					} else if (aUnit.value === "km") {
+						R *= 0.000000006684587;
+					}
+					
+					let m1S = m1;
+					
+					if (m1Unit.value === "e") {
+						m1S /= 332946;
+					} else if (m1Unit.value === "j") {
+						m1S /= 1047;
+					}
+					
+					let m2S = m2;
+					
+					if (m2Unit.value === "e") {
+						m2S /= 332946;
+					} else if (m2Unit.value === "j") {
+						m2S /= 1047;
+					}
+					
+					p.value = Math.sqrt(Math.pow(R, 3) / (m1S + m2S));
+				}
+			</script>
+			<input type="number" id="aInput" placeholder="Distance Between Bodies">
+			<select id="aUnit">
+				<option value="m">M</option>
+				<option value="km">KM</option>
+				<option value="au">AU</option>
+			</select>
+			<br>
+			<input type="number" id="m1Input" placeholder="Mass of Body 1">
+			<select id="m1Unit">
+				<option value="e">M⊕</option>
+				<option value="j">MJ</option>
+				<option value="s">M⊙︎</option>
+			</select>
+			<br>
+			<input type="number" id="m2Input" placeholder="Mass of Body 2">
+			<select id="m2Unit">
+				<option value="e">M⊕</option>
+				<option value="j">MJ</option>
+				<option value="s">M⊙︎</option>
+			</select>
+			<br>
+			<br>
+			Semimajor Axis of Body 1 (Same unit as input): 
+			<output name="r1"></output>
+			<br>
+			Semimajor Axis of Body 2 (Same unit as input): 
+			<output name="r2"/></output>
+			<br>
+			Orbital Period (Years): 
+			<output name="p"/></output>
+		</form>
+    </body>
+</html>
